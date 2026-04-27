@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.chat.mapper.UserChatMessageMapper">
+
+    <resultMap id="UserChatMessageResultMap" type="com.itzx.chat.entity.UserChatMessage">
+        <id property="id" column="id"/>
+        <result property="buyerUsername" column="buyer_username"/>
+        <result property="fromRole" column="from_role"/>
+        <result property="fromUsername" column="from_username"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.itzx.chat.entity.UserChatMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into user_chat_message(buyer_username, from_role, from_username, content, create_time)
+        values (#{buyerUsername}, #{fromRole}, #{fromUsername}, #{content}, now())
+    </insert>
+
+    <select id="findByBuyerUsername" resultMap="UserChatMessageResultMap">
+        select id,buyer_username,from_role,from_username,content,create_time
+        from user_chat_message
+        where buyer_username = #{buyerUsername}
+        order by create_time asc
+    </select>
+
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.order.mapper.OrdersMapper">
+
+    <resultMap id="OrdersResultMap" type="com.itzx.order.entity.Orders">
+        <id property="id" column="id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="userId" column="user_id"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="status" column="status"/>
+        <result property="payType" column="pay_type"/>
+        <result property="receiverName" column="receiver_name"/>
+        <result property="receiverPhone" column="receiver_phone"/>
+        <result property="receiverAddress" column="receiver_address"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="shipTime" column="ship_time"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="cancelTime" column="cancel_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="insertOrder" parameterType="com.itzx.order.entity.Orders" useGeneratedKeys="true" keyProperty="id">
+        insert into orders(order_no, user_id, total_amount, status, pay_type,
+                           receiver_name, receiver_phone, receiver_address, remark,
+                           create_time, update_time)
+        values (#{orderNo}, #{userId}, #{totalAmount}, #{status}, #{payType},
+                #{receiverName}, #{receiverPhone}, #{receiverAddress}, #{remark},
+                now(), now())
+    </insert>
+
+    <select id="findByOrderNo" resultMap="OrdersResultMap">
+        select id,order_no,user_id,total_amount,status,pay_type,
+               receiver_name,receiver_phone,receiver_address,remark,
+               create_time,pay_time,ship_time,finish_time,cancel_time,update_time
+        from orders
+        where order_no = #{orderNo}
+    </select>
+
+    <select id="findByUserId" resultMap="OrdersResultMap">
+        select id,order_no,user_id,total_amount,status,pay_type,
+               receiver_name,receiver_phone,receiver_address,remark,
+               create_time,pay_time,ship_time,finish_time,cancel_time,update_time
+        from orders
+        where user_id = #{userId}
+        order by create_time desc
+    </select>
+
+    <select id="findAll" resultMap="OrdersResultMap">
+        select id,order_no,user_id,total_amount,status,pay_type,
+               receiver_name,receiver_phone,receiver_address,remark,
+               create_time,pay_time,ship_time,finish_time,cancel_time,update_time
+        from orders
+        order by create_time desc
+    </select>
+
+    <update id="cancelOrder">
+        update orders
+        set status = 4,
+            cancel_time = now(),
+            update_time = now()
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+          and status = 0
+    </update>
+
+    <update id="markPaid">
+        update orders
+        set status = 1,
+            pay_time = now(),
+            update_time = now()
+        where order_no = #{orderNo}
+          and status = 0
+    </update>
+
+    <update id="markShipped">
+        update orders
+        set status = 2,
+            ship_time = now(),
+            update_time = now()
+        where order_no = #{orderNo}
+          and status = 1
+    </update>
+
+    <update id="confirmReceive">
+        update orders
+        set status = 3,
+            finish_time = now(),
+            update_time = now()
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+          and status = 2
+    </update>
+
+    <update id="markCommented">
+        update orders
+        set status = 4,
+            update_time = now()
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+          and status = 3
+    </update>
+
+    <update id="applyRefund">
+        update orders
+        set status = 4,
+            cancel_time = now(),
+            update_time = now()
+        where order_no = #{orderNo}
+          and user_id = #{userId}
+          and status in (1,2,3)
+    </update>
+
+</mapper>

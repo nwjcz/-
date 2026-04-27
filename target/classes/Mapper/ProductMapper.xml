@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.electronics.mapper.ProductMapper">
+
+    <select id="findProduct" resultType="com.itzx.electronics.entity.Product">
+        select id,pname,price,image_url,stock,purchase_limit as purchaseLimit,status,create_time,update_time,detail_id
+        from product
+    </select>
+    <select id="findProductMo" resultType="com.itzx.electronics.entity.Product">
+        select id,pname,price,image_url,stock,purchase_limit as purchaseLimit,status,create_time,update_time,detail_id
+        from product
+        where pname like concat('%',#{pname},'%')
+    </select>
+    <select id="findProductById" resultType="com.itzx.electronics.entity.Product">
+        select id,pname,price,image_url,stock,purchase_limit as purchaseLimit,status,create_time,update_time,detail_id
+        from product
+        where id=#{id}
+    </select>
+    <delete id="delProduct">
+        delete from product where id=#{id}
+    </delete>
+    <update id="updataProduct" parameterType="com.itzx.electronics.entity.Product">
+        update product
+        set pname = #{pname},
+            price = #{price},
+            image_url = #{imageUrl},
+            stock = #{stock},
+            purchase_limit = #{purchaseLimit},
+            status = #{status},
+            update_time = now(),
+            detail_id = #{detailId}
+        where id = #{id}
+    </update>
+
+    <update id="decreaseStockIfEnough">
+        update product
+        set stock = stock - #{qty}
+        where id = #{id}
+          and stock &gt;= #{qty}
+    </update>
+    <insert id="addProduct" parameterType="com.itzx.electronics.entity.Product">
+        insert into product(pname, price, image_url, stock, purchase_limit, status, create_time, update_time, detail_id)
+        values(#{pname}, #{price}, #{imageUrl}, #{stock}, #{purchaseLimit}, #{status}, now(), now(), #{detailId})
+    </insert>
+
+</mapper>

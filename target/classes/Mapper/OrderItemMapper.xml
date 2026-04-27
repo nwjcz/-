@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.order.mapper.OrderItemMapper">
+
+    <resultMap id="OrderItemResultMap" type="com.itzx.order.entity.OrderItem">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="productImage" column="product_image"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="quantity" column="quantity"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="insertOrderItem" parameterType="com.itzx.order.entity.OrderItem" useGeneratedKeys="true" keyProperty="id">
+        insert into order_item(order_id, product_id, product_name, product_image,
+                               unit_price, quantity, total_price,
+                               create_time, update_time)
+        values (#{orderId}, #{productId}, #{productName}, #{productImage},
+                #{unitPrice}, #{quantity}, #{totalPrice},
+                now(), now())
+    </insert>
+
+    <select id="findByOrderId" resultMap="OrderItemResultMap">
+        select id,order_id,product_id,product_name,product_image,
+               unit_price,quantity,total_price,create_time,update_time
+        from order_item
+        where order_id = #{orderId}
+    </select>
+
+</mapper>
