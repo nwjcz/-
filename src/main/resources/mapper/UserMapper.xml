@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.user.mapper.UserMapper">
+    <!--登录的sql语句-->
+    <select id="login" resultType="com.itzx.user.entity.User">
+        select id, uname, upwd, type, email, create_time, status
+        from user
+        where uname=#{uname}
+    </select>
+    <!--根据用户名和邮箱查询用户-->
+    <select id="selectByUname" resultType="com.itzx.user.entity.User">
+        select uname,email from user where uname=#{uname} or email= #{email}
+    </select>
+    <select id="selectByUnameEmail" resultType="com.itzx.user.entity.User">
+        select uname,email from user where uname= #{uname} and email= #{email}
+    </select>
+    <select id="selectByEmail" resultType="com.itzx.user.entity.User">
+        select id, uname, upwd, type, email, create_time, status
+        from user
+        where email = #{email}
+    </select>
+    <!--注册-->
+    <insert id="register" parameterType="com.itzx.user.entity.User">
+        insert into user(uname,upwd,type,email,create_time,status)
+            value (#{uname},#{upwd},#{type},#{email},now(),0)
+    </insert>
+    <!--重置密码-->
+    <update id="updatePwd">
+        update user set upwd=#{upwd} where email=#{email} and uname=#{uname}
+    </update>
+    <update id="updatePwdByEmail">
+        update user set upwd=#{upwd} where email=#{email}
+    </update>
+    <!--查询用户-->
+    <select id="findUser" resultType="com.itzx.user.entity.User">
+        select uname,email,type,status,create_time from user
+    </select>
+    <!--模糊查询-->
+    <select id="findUserMo" resultType="com.itzx.user.entity.User">
+        select uname,email,type,status,create_time from user where uname like concat('%',#{uname},'%')
+    </select>
+    <!--删除用户-->
+    <delete id="delUser">
+        delete from user where id=#{id}
+    </delete>
+</mapper>

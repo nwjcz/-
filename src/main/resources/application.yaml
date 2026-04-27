@@ -1,0 +1,41 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db05?serverTimezone=UTC&useSSL=false
+    username: root
+    password: 123456
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: your_email@example.com
+    password: your_email_password_or_app_password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+mybatis:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+jwt:
+  secret: MzE0MTU5MjZ6eGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6MTIzNA== # 256位以上密钥
+  expire: 7200000 # 2小时（7200000毫秒）
+alipay:
+  gateway-url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  app-id: 9021000145613976
+  merchant-private-key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC2oiOgVhu02muy5+fVOke7qgjVRKFDTMZ68dmn+OAaTiYcbXTk5ix0gHmTCHChi8w+3K321B43nOUGtD2nGycgyumLVKNIz2OkOOsFSrZCJyms3dXiKwdNpD1Xq6uKsjNVsulr/DtO5FnYyqZee/G3wjKP9JwcTmBGmZpMvefzC9jKtb0fbETQFoTwbcaxEaGjRBegzDgS9q0LNR8nPepXvmLEB+zQ0DZ1cwK8wupg+/7OWBGgsRexQYDK/3OlV6ZTmFiBpULCkk8YJLag7CV+UWLadme/KOB/aJCn1S5TS76ae5iFHenhMsE8x93jSDg5T3EHir9w6eFlAd4miTItAgMBAAECggEARhVQMI36kdsjawL8/uEfd89XFmgAri+/FpzKVl/1t4J3s375VYFSW96VSKv7dLKNzS2oAEkD03l8lacC5aZQzI+xMUtoYV9cMD+7SEuURyx6HKEAG4tBgTTeaU8yQ8YAVwmR82NWav7Lz5psX2OWrVpzRrSqV15oKY92G67gXG5u9Bbl/y+9DpT3MxVYCXe4HAup+ZprkfiYjNqvG9PR9NRqjCJm8+5hzVzq6nQHDjijT+9LWShQDtWxDidcY0QV0VTG2CMiNKyKHtHDIWnRG1LQMJvKHEBu64+LsME1S2Fvsz+pPOw0SzRU5IGLA4O4hzwfLhDJ6lEK+iWDnAYkbQKBgQD3EUVlnNcMpa9pgDcetEVjYX7G3AhRLHHzvQaDmvoNxzCZCzSFvYxqQgAHFPeu5EgoDajDzQ+yj5CWj/uO8eJs1qnzpITB0YSx+q1EoAe4/JqzDdAiyHbUgjsT59c49uRfcaIOUlG9nRXKDP4811OtQNd9dT/EJUB6QaVMffxMXwKBgQC9PH/NqSUXci1PqGXbRdt8Z3T64gRBAQDdnEkipI2+0GUTtb3xl5pYVQ3RaE5TqRZmYJC7i4s7gb7sP2NZgKCwgCG0yvJofilikfMqWXFckH6swGIz++6sVXftGzr7p+1Pfy1Pjz3iTx7t383eWzGg6uxmFkdGy2mqxyHBWm/M8wKBgQCRm7wqhqS2727R3p6dmeDLEUqGKGc+b9M4ss6EAXIdbKdXiyMJLwzyErOxeMoAaMmd0W8E9nWp5rJwCatYM3YebuT6kpsrHy/1NKepKidi/nytyhZAaaSe2aG3uYs+J0OwfGflyN4jwdB1o/KyKLVIBk75wYAzOUEmzEl/K0DmQQKBgEzOiXEH/i4OAaYbS3w8VmGf/DL4GZHovlk0XdrZv057dwsQ8Q9l4ReJLhqYo3IBZz4WY6g7cz+r4box4DkrpAz/dK7U0J7o1hNT+cZulzxiyYeEbld7IdyAtDRgoQgTmJZzoAhys0NvqbYS6JQfn30Y3OpykGuDlFfkiybXdhlRAoGADVetp/IVTQWNFkoDkwCxtoz5t23LlCWXkEwWbYycFt4E0mQzPY7XSbKLAOjS/G1x/KHE9WnwiT5RmUaY44Os9G30Br4htPPh9N8mayOC5RCyNYPeqcwPKp+Yf7E3FhuvOlHmNxVZ/fQ1EU/ST65RYF49cqk0emWJucPnYneJq5c=
+  alipay-public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjGjMUras6V9G0VwTjp6b4oJ7qoCMo0HLkExXK+d8FZW0Nl0qmaWQxFNGwvV/1srjrFw0k10jGltShSB97MAV6GwN/ml3Ow7palAj77nUxYnU7fNJVdhrYizvoo/E9V3rgKHhx5Rlbqrqvb29eSrlpQs1P5ZP6jB8/igkfVwIWr+hKrO9uinouQ0fZaE8ZkA30zJyYLGiklqQVUlO3gGnxNidF+GKXQp4QwFfqnkNLKg6USGgENFGGqR4h8RGLz/Nib8pK88RVC99NKCsGKvvEZBolkkrhlOnwVyI7AxYYBLxiYkqr2Kz+cN6+R5a8vpDXa6pqiwQNuqpg0bVGrrrXwIDAQAB
+  notify-url: http://localhost:8081/api/order/alipayNotify
+  return-url: http://localhost:8080/#/payResult
+  debug-skip-sign: true
+

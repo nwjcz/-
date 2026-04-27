@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.comment.mapper.CommentMapper">
+
+    <resultMap id="CommentResultMap" type="com.itzx.comment.entity.Comment">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="productId" column="product_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="rating" column="rating"/>
+        <result property="content" column="content"/>
+        <result property="merchantReply" column="merchant_reply"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="replyTime" column="reply_time"/>
+        <result property="appendContent" column="append_content"/>
+        <result property="appendTime" column="append_time"/>
+    </resultMap>
+
+    <insert id="insertComment" parameterType="com.itzx.comment.entity.Comment" useGeneratedKeys="true" keyProperty="id">
+        insert into product_comment(order_id, order_no, product_id, user_id, rating, content,
+                                    merchant_reply, append_content, create_time, update_time, reply_time, append_time)
+        values (#{orderId}, #{orderNo}, #{productId}, #{userId}, #{rating}, #{content},
+                #{merchantReply}, #{appendContent}, now(), now(), #{replyTime}, #{appendTime})
+    </insert>
+
+    <select id="findById" resultMap="CommentResultMap">
+        select id,order_id,order_no,product_id,user_id,rating,content,
+               merchant_reply,append_content,create_time,update_time,reply_time,append_time
+        from product_comment
+        where id = #{id}
+    </select>
+
+    <select id="findByProductId" resultMap="CommentResultMap">
+        select id,order_id,order_no,product_id,user_id,rating,content,
+               merchant_reply,create_time,update_time,reply_time
+        from product_comment
+        where product_id = #{productId}
+        order by create_time desc
+    </select>
+
+    <select id="findByOrderAndProduct" resultMap="CommentResultMap">
+        select id,order_id,order_no,product_id,user_id,rating,content,
+               merchant_reply,create_time,update_time,reply_time
+        from product_comment
+        where order_id = #{orderId}
+          and product_id = #{productId}
+          and user_id = #{userId}
+    </select>
+
+    <update id="updateMerchantReply">
+        update product_comment
+        set merchant_reply = #{merchantReply},
+            reply_time = now(),
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <update id="updateAppendContent">
+        update product_comment
+        set append_content = #{appendContent},
+            append_time = now(),
+            update_time = now()
+        where id = #{id}
+    </update>
+
+</mapper>

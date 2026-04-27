@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.cart.mapper.CartMapper">
+
+    <resultMap id="CartResultMap" type="com.itzx.cart.entity.Cart">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="quantity" column="quantity"/>
+        <result property="checked" column="checked"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="findByUserIdAndProductId" resultMap="CartResultMap">
+        select id,user_id,product_id,quantity,checked,create_time,update_time
+        from cart
+        where user_id = #{userId} and product_id = #{productId}
+    </select>
+
+    <select id="findByUserId" resultMap="CartResultMap">
+        select id,user_id,product_id,quantity,checked,create_time,update_time
+        from cart
+        where user_id = #{userId}
+        order by create_time desc
+    </select>
+
+    <select id="findCheckedByUserId" resultMap="CartResultMap">
+        select id,user_id,product_id,quantity,checked,create_time,update_time
+        from cart
+        where user_id = #{userId} and checked = 1
+        order by create_time desc
+    </select>
+
+    <insert id="insertCart" parameterType="com.itzx.cart.entity.Cart" useGeneratedKeys="true" keyProperty="id">
+        insert into cart(user_id, product_id, quantity, checked, create_time, update_time)
+        values (#{userId}, #{productId}, #{quantity}, #{checked}, now(), now())
+    </insert>
+
+    <update id="updateCart" parameterType="com.itzx.cart.entity.Cart">
+        update cart
+        set quantity = #{quantity},
+            checked = #{checked},
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <delete id="deleteByUserIdAndProductId">
+        delete from cart
+        where user_id = #{userId} and product_id = #{productId}
+    </delete>
+
+    <delete id="deleteByUserId">
+        delete from cart
+        where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteCheckedByUserId">
+        delete from cart
+        where user_id = #{userId} and checked = 1
+    </delete>
+
+</mapper>

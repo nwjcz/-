@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.merchant.mapper.MerchantOrderMapper">
+
+    <resultMap id="MerchantOrderResultMap" type="com.itzx.merchant.dto.MerchantOrderDTO">
+        <id property="id" column="id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="status" column="status"/>
+        <result property="receiverName" column="receiver_name"/>
+        <result property="receiverPhone" column="receiver_phone"/>
+        <result property="receiverAddress" column="receiver_address"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="shipTime" column="ship_time"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="cancelTime" column="cancel_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="findByCondition" resultMap="MerchantOrderResultMap">
+        select o.id,
+               o.order_no,
+               o.user_id,
+               u.uname as username,
+               o.total_amount,
+               o.status,
+               o.receiver_name,
+               o.receiver_phone,
+               o.receiver_address,
+               o.remark,
+               o.create_time,
+               o.pay_time,
+               o.ship_time,
+               o.finish_time,
+               o.cancel_time,
+               o.update_time
+        from orders o
+                 join user u on o.user_id = u.id
+        <where>
+            <if test="username != null and username != ''">
+                and u.uname like concat('%', #{username}, '%')
+            </if>
+            <if test="status != null">
+                and o.status = #{status}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and o.create_time &gt;= concat(#{startDate}, ' 00:00:00')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and o.create_time &lt;= concat(#{endDate}, ' 23:59:59')
+            </if>
+        </where>
+        order by o.create_time desc
+    </select>
+
+</mapper>

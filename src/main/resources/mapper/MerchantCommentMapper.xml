@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.merchant.mapper.MerchantCommentMapper">
+
+    <resultMap id="MerchantCommentResultMap" type="com.itzx.merchant.dto.MerchantCommentDTO">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="rating" column="rating"/>
+        <result property="content" column="content"/>
+        <result property="merchantReply" column="merchant_reply"/>
+        <result property="createTime" column="create_time"/>
+        <result property="replyTime" column="reply_time"/>
+        <result property="appendContent" column="append_content"/>
+        <result property="appendTime" column="append_time"/>
+    </resultMap>
+
+    <select id="findByProductId" resultMap="MerchantCommentResultMap">
+        select c.id,
+               c.order_id,
+               c.order_no,
+               c.product_id,
+               p.pname as product_name,
+               c.user_id,
+               u.uname as username,
+               c.rating,
+               c.content,
+               c.merchant_reply,
+               c.append_content,
+               c.create_time,
+               c.reply_time,
+               c.append_time
+        from product_comment c
+                 join user u on c.user_id = u.id
+                 join product p on c.product_id = p.id
+        where c.product_id = #{productId}
+        order by c.create_time desc
+    </select>
+
+
+</mapper>

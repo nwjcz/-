@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.chat.mapper.UserChatSessionMapper">
+
+    <resultMap id="UserChatSessionResultMap" type="com.itzx.chat.entity.UserChatSession">
+        <id property="id" column="id"/>
+        <result property="buyerUsername" column="buyer_username"/>
+        <result property="buyerDisplayName" column="buyer_display_name"/>
+        <result property="lastMsgContent" column="last_msg_content"/>
+        <result property="lastMsgTime" column="last_msg_time"/>
+        <result property="lastMsgFrom" column="last_msg_from"/>
+        <result property="unreadCount" column="unread_count"/>
+        <result property="hasUnreplied" column="has_unreplied"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findByBuyerUsername" resultMap="UserChatSessionResultMap">
+        select id,buyer_username,buyer_display_name,last_msg_content,last_msg_time,last_msg_from,
+               unread_count,has_unreplied,created_at,updated_at
+        from user_chat_session
+        where buyer_username = #{buyerUsername}
+    </select>
+
+    <select id="findAllSessions" resultMap="UserChatSessionResultMap">
+        select id,buyer_username,buyer_display_name,last_msg_content,last_msg_time,last_msg_from,
+               unread_count,has_unreplied,created_at,updated_at
+        from user_chat_session
+        order by last_msg_time desc
+    </select>
+
+    <insert id="insert" parameterType="com.itzx.chat.entity.UserChatSession" useGeneratedKeys="true" keyProperty="id">
+        insert into user_chat_session(buyer_username,buyer_display_name,last_msg_content,last_msg_time,last_msg_from,
+                                      unread_count,has_unreplied,created_at,updated_at)
+        values (#{buyerUsername},#{buyerDisplayName},#{lastMsgContent},#{lastMsgTime},#{lastMsgFrom},
+                #{unreadCount},#{hasUnreplied},#{createdAt},#{updatedAt})
+    </insert>
+
+    <update id="updateOnBuyerMessage">
+        update user_chat_session
+        set last_msg_content = #{content},
+            last_msg_time = #{msgTime},
+            last_msg_from = 'USER',
+            unread_count = unread_count + 1,
+            has_unreplied = 1,
+            updated_at = #{msgTime}
+        where buyer_username = #{buyerUsername}
+    </update>
+
+    <update id="updateOnMerchantMessage">
+        update user_chat_session
+        set last_msg_content = #{content},
+            last_msg_time = #{msgTime},
+            last_msg_from = 'MERCHANT',
+            has_unreplied = 0,
+            updated_at = #{msgTime}
+        where buyer_username = #{buyerUsername}
+    </update>
+
+    <update id="resetUnread">
+        update user_chat_session
+        set unread_count = 0,
+            updated_at = now()
+        where buyer_username = #{buyerUsername}
+    </update>
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.merchant.mapper.MerchantStatsMapper">
+
+    <resultMap id="ProductStatsResultMap" type="com.itzx.merchant.dto.ProductStatsDTO">
+        <result property="productId" column="productId"/>
+        <result property="productName" column="productName"/>
+        <result property="salesVolume" column="salesVolume"/>
+        <result property="refundVolume" column="refundVolume"/>
+        <result property="salesAmount" column="salesAmount"/>
+    </resultMap>
+
+    <select id="findProductStats" resultMap="ProductStatsResultMap">
+        SELECT
+            oi.product_id AS productId,
+            MAX(oi.product_name) AS productName,
+            SUM(CASE
+                    WHEN o.pay_time IS NOT NULL
+                     AND (o.cancel_time IS NULL OR o.cancel_time > o.pay_time)
+                     AND o.pay_time &gt;= CONCAT(#{startDate}, ' 00:00:00')
+                     AND o.pay_time &lt;= CONCAT(#{endDate}, ' 23:59:59')
+                    THEN oi.quantity ELSE 0 END) AS salesVolume,
+            SUM(CASE
+                    WHEN o.pay_time IS NOT NULL
+                     AND o.cancel_time IS NOT NULL
+                     AND o.cancel_time &gt;= CONCAT(#{startDate}, ' 00:00:00')
+                     AND o.cancel_time &lt;= CONCAT(#{endDate}, ' 23:59:59')
+                    THEN oi.quantity ELSE 0 END) AS refundVolume,
+            SUM(CASE
+                    WHEN o.pay_time IS NOT NULL
+                     AND (o.cancel_time IS NULL OR o.cancel_time &gt; o.pay_time)
+                     AND o.pay_time &gt;= CONCAT(#{startDate}, ' 00:00:00')
+                     AND o.pay_time &lt;= CONCAT(#{endDate}, ' 23:59:59')
+                    THEN oi.total_price ELSE 0 END) AS salesAmount
+        FROM order_item oi
+                 JOIN orders o ON oi.order_id = o.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND oi.product_name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        GROUP BY oi.product_id
+        ORDER BY salesVolume DESC
+        <if test="topN != null and topN &gt; 0">
+            LIMIT #{topN}
+        </if>
+    </select>
+
+</mapper>
