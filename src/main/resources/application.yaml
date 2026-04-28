@@ -11,17 +11,22 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   mail:
     host: smtp.example.com
     port: 587
-    username: your_email@example.com
-    password: your_email_password_or_app_password
+    username: 1917009968@qq.com
+    password: rbwwpyhreyovcabc
     properties:
       mail:
         smtp:
           auth: true
           starttls:
-            enable: true
+            enable: false
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
   configuration:
@@ -30,6 +35,22 @@ mybatis:
 jwt:
   secret: MzE0MTU5MjZ6eGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6MTIzNA== # 256位以上密钥
   expire: 7200000 # 2小时（7200000毫秒）
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false
+    rabbit:
+      enabled: true
+  metrics:
+    tags:
+      application: electronics-shopping
 alipay:
   gateway-url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
   app-id: 9021000145613976

@@ -5,7 +5,8 @@ public enum OrderStatus {
     WAIT_SHIP(1),
     WAIT_RECEIVE(2),
     WAIT_COMMENT(3),
-    FINISHED(4);
+    FINISHED(4),
+    CANCELLED(5);
 
     private final int code;
 

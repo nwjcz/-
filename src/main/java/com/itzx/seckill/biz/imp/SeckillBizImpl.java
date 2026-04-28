@@ -2,18 +2,15 @@ package com.itzx.seckill.biz.imp;
 
 import com.itzx.electronics.entity.Product;
 import com.itzx.electronics.mapper.ProductMapper;
-import com.itzx.order.entity.OrderItem;
-import com.itzx.order.entity.Orders;
-import com.itzx.order.enums.OrderStatus;
-import com.itzx.order.mapper.OrderItemMapper;
-import com.itzx.order.mapper.OrdersMapper;
+import com.itzx.mq.RabbitMqConstants;
+import com.itzx.mq.dto.SeckillOrderCreateMessage;
 import com.itzx.seckill.biz.SeckillBiz;
 import com.itzx.until.Result;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,13 +47,10 @@ public class SeckillBizImpl implements SeckillBiz {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
     private ProductMapper productMapper;
-
-    @Autowired
-    private OrdersMapper ordersMapper;
-
-    @Autowired
-    private OrderItemMapper orderItemMapper;
 
     @Override
     public Result preloadStock(int productId, int stock) {
@@ -72,7 +66,6 @@ public class SeckillBizImpl implements SeckillBiz {
     }
 
     @Override
-    @Transactional
     public Result seckillBuy(int userId,
                             int productId,
                             String receiverName,
@@ -111,45 +104,23 @@ public class SeckillBizImpl implements SeckillBiz {
             return Result.error("商品不存在");
         }
 
-        int affected = productMapper.decreaseStockIfEnough(productId, 1);
-        if (affected <= 0) {
-            rollbackRedis(stockKey, buyKey);
-            return Result.error("库存不足");
-        }
+        String orderNo = generateOrderNo(userId);
+        SeckillOrderCreateMessage message = new SeckillOrderCreateMessage(
+                orderNo,
+                userId,
+                productId,
+                receiverName,
+                receiverPhone,
+                receiverAddress,
+                remark
+        );
+        rabbitTemplate.convertAndSend(
+                RabbitMqConstants.SECKILL_EXCHANGE,
+                RabbitMqConstants.SECKILL_ROUTING_KEY,
+                message
+        );
 
-        Orders order = new Orders();
-        order.setOrderNo(generateOrderNo(userId));
-        order.setUserId(userId);
-        order.setTotalAmount(product.getPrice());
-        order.setStatus(OrderStatus.WAIT_PAY.getCode());
-        order.setPayType(null);
-        order.setReceiverName(receiverName);
-        order.setReceiverPhone(receiverPhone);
-        order.setReceiverAddress(receiverAddress);
-        order.setRemark(remark);
-
-        int inserted = ordersMapper.insertOrder(order);
-        if (inserted <= 0 || order.getId() == null) {
-            rollbackRedis(stockKey, buyKey);
-            throw new RuntimeException("创建订单失败");
-        }
-
-        OrderItem item = new OrderItem();
-        item.setOrderId(order.getId());
-        item.setProductId(product.getId());
-        item.setProductName(product.getPname());
-        item.setProductImage(product.getImageUrl());
-        item.setUnitPrice(product.getPrice());
-        item.setQuantity(1);
-        item.setTotalPrice(product.getPrice());
-
-        int itemInserted = orderItemMapper.insertOrderItem(item);
-        if (itemInserted <= 0) {
-            rollbackRedis(stockKey, buyKey);
-            throw new RuntimeException("创建订单明细失败");
-        }
-
-        return Result.success(order);
+        return Result.success(orderNo);
     }
 
     private static String buildStockKey(int productId) {

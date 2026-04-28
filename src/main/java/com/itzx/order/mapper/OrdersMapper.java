@@ -19,6 +19,8 @@ public interface OrdersMapper {
 
     int cancelOrder(@Param("userId") int userId, @Param("orderNo") String orderNo);
 
+    int closeOrderIfUnpaid(@Param("orderNo") String orderNo);
+
     int markPaid(@Param("orderNo") String orderNo);
 
     int markShipped(@Param("orderNo") String orderNo);

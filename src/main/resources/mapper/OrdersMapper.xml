@@ -59,11 +59,20 @@
 
     <update id="cancelOrder">
         update orders
-        set status = 4,
+        set status = 5,
             cancel_time = now(),
             update_time = now()
         where order_no = #{orderNo}
           and user_id = #{userId}
+          and status = 0
+    </update>
+
+    <update id="closeOrderIfUnpaid">
+        update orders
+        set status = 5,
+            cancel_time = now(),
+            update_time = now()
+        where order_no = #{orderNo}
           and status = 0
     </update>
 
@@ -106,7 +115,7 @@
 
     <update id="applyRefund">
         update orders
-        set status = 4,
+        set status = 5,
             cancel_time = now(),
             update_time = now()
         where order_no = #{orderNo}

@@ -19,6 +19,8 @@ public interface ProductMapper {
 
     int decreaseStockIfEnough(@Param("id") int id, @Param("qty") int qty);
 
+    int increaseStock(@Param("id") int id, @Param("qty") int qty);
+
     int updataProduct(Product product);
 
     int addProduct(Product product);

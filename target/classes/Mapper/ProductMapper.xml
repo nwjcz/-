@@ -40,6 +40,12 @@
         where id = #{id}
           and stock &gt;= #{qty}
     </update>
+
+    <update id="increaseStock">
+        update product
+        set stock = stock + #{qty}
+        where id = #{id}
+    </update>
     <insert id="addProduct" parameterType="com.itzx.electronics.entity.Product">
         insert into product(pname, price, image_url, stock, purchase_limit, status, create_time, update_time, detail_id)
         values(#{pname}, #{price}, #{imageUrl}, #{stock}, #{purchaseLimit}, #{status}, now(), now(), #{detailId})
