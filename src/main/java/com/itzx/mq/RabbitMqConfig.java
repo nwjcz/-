@@ -12,16 +12,19 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
     @Bean
+    // 秒杀交换机
     public DirectExchange seckillExchange() {
         return new DirectExchange(RabbitMqConstants.SECKILL_EXCHANGE, true, false);
     }
 
     @Bean
+    // 秒杀队列
     public Queue seckillQueue() {
         return QueueBuilder.durable(RabbitMqConstants.SECKILL_QUEUE).build();
     }
 
     @Bean
+    // 秒杀队列绑定交换机
     public Binding seckillBinding(DirectExchange seckillExchange, Queue seckillQueue) {
         return BindingBuilder.bind(seckillQueue)
                 .to(seckillExchange)
@@ -29,6 +32,7 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    // 订单关闭交换机
     public DirectExchange orderCloseExchange() {
         return new DirectExchange(RabbitMqConstants.ORDER_CLOSE_EXCHANGE, true, false);
     }

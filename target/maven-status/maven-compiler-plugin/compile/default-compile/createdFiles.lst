@@ -1,0 +1,14 @@
+com\itzx\signin\biz\imp\SignInBizImpl.class
+com\itzx\coupon\mapper\CouponMapper.class
+com\itzx\signin\controller\SignInController.class
+com\itzx\coupon\entity\UserCoupon.class
+com\itzx\coupon\controller\UserCouponController.class
+com\itzx\coupon\mapper\UserCouponMapper.class
+com\itzx\coupon\biz\CouponBiz.class
+com\itzx\coupon\controller\CouponManageController.class
+com\itzx\signin\entity\SignInRecord.class
+com\itzx\signin\biz\SignInBiz.class
+com\itzx\coupon\controller\CouponAuditController.class
+com\itzx\coupon\entity\Coupon.class
+com\itzx\signin\mapper\SignInMapper.class
+com\itzx\coupon\biz\imp\CouponBizImpl.class
