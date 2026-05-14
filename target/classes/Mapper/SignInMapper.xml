@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.signin.mapper.SignInMapper">
+    <select id="findByUserIdAndDate" resultType="com.itzx.signin.entity.SignInRecord">
+        select id, user_id, sign_in_date, consecutive_days, create_time
+        from sign_in_record
+        where user_id = #{userId} and sign_in_date = #{date}
+    </select>
+
+    <select id="findLatestByUserId" resultType="com.itzx.signin.entity.SignInRecord">
+        select id, user_id, sign_in_date, consecutive_days, create_time
+        from sign_in_record
+        where user_id = #{userId}
+        order by sign_in_date desc
+        limit 1
+    </select>
+
+    <insert id="insert" parameterType="com.itzx.signin.entity.SignInRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into sign_in_record(user_id, sign_in_date, consecutive_days, create_time)
+        values (#{userId}, #{signInDate}, #{consecutiveDays}, now())
+    </insert>
+</mapper>

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn compile *2)",
+      "Bash(sc query *)",
+      "Bash(redis-cli ping *)",
+      "Bash(where redis-cli *)",
+      "Bash(mysql *)",
+      "Bash(netstat -ano)",
+      "Bash(tasklist)",
+      "Bash(npx vue-cli-service *)",
+      "Bash(mvn compile *)"
+    ]
+  }
+}

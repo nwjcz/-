@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itzx.coupon.mapper.CouponMapper">
+    <insert id="insert" parameterType="com.itzx.coupon.entity.Coupon" useGeneratedKeys="true" keyProperty="id">
+        insert into coupon(name, amount, min_order_amount, sign_in_day, status, merchant_id, create_time, update_time)
+        values (#{name}, #{amount}, #{minOrderAmount}, #{signInDay}, #{status}, #{merchantId}, now(), now())
+    </insert>
+
+    <update id="update" parameterType="com.itzx.coupon.entity.Coupon">
+        update coupon set
+            name = #{name},
+            amount = #{amount},
+            min_order_amount = #{minOrderAmount},
+            sign_in_day = #{signInDay},
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <select id="findById" resultType="com.itzx.coupon.entity.Coupon">
+        select id, name, amount, min_order_amount, sign_in_day, status, merchant_id, create_time, update_time
+        from coupon
+        where id = #{id}
+    </select>
+
+    <select id="findByMerchantId" resultType="com.itzx.coupon.entity.Coupon">
+        select id, name, amount, min_order_amount, sign_in_day, status, merchant_id, create_time, update_time
+        from coupon
+        where merchant_id = #{merchantId}
+        order by create_time desc
+    </select>
+
+    <select id="findApprovedBySignInDay" resultType="com.itzx.coupon.entity.Coupon">
+        select id, name, amount, min_order_amount, sign_in_day, status, merchant_id, create_time, update_time
+        from coupon
+        where sign_in_day = #{signInDay} and status = 1
+        order by create_time desc
+    </select>
+
+    <select id="findAll" resultType="com.itzx.coupon.entity.Coupon">
+        select id, name, amount, min_order_amount, sign_in_day, status, merchant_id, create_time, update_time
+        from coupon
+        order by create_time desc
+    </select>
+
+    <select id="findByStatus" resultType="com.itzx.coupon.entity.Coupon">
+        select id, name, amount, min_order_amount, sign_in_day, status, merchant_id, create_time, update_time
+        from coupon
+        where status = #{status}
+        order by create_time desc
+    </select>
+
+    <update id="updateStatus">
+        update coupon set status = #{status}, update_time = now() where id = #{id}
+    </update>
+</mapper>
